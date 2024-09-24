@@ -16,6 +16,8 @@ public class PaymentController {
 
     private final KakaoService kakaoService;
 
+    private String tid = "";
+
     @PostMapping("/payment")
     public ReadyResponse payReady(@RequestBody OrderForm request) {
         String name = request.getName();
@@ -26,7 +28,7 @@ public class PaymentController {
 
         ReadyResponse response = kakaoService.payReady(name, totalAmount);
 
-        SessionUtils.addAttribute("tid", response.getTid());
+        tid = response.getTid();
         log.info("tid: {}", response.getTid());
         return response;
     }
@@ -34,7 +36,6 @@ public class PaymentController {
     @GetMapping("/payment/completed")
     public String payCompleted(@RequestParam("pg_token") String pgToken) {
         log.info("/payment/completed");
-        String tid = SessionUtils.getStringAttributeValue("tid");
         log.info("tid: {}", tid);
         log.info("pg_token: {}", pgToken);
 
